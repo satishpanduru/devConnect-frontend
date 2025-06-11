@@ -8,7 +8,8 @@ const Login = () => {
     password: ''
   });
   const [alert, setAlert] = useState(null);
-  
+  const [showPassword, setShowPassword] = useState(false);
+
   const { login, isAuthenticated, error } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -16,7 +17,7 @@ const Login = () => {
     if (isAuthenticated) {
       navigate('/feed');
     }
-    
+
     if (error) {
       setAlert({ type: 'danger', message: error });
     }
@@ -30,14 +31,14 @@ const Login = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       setAlert({ type: 'danger', message: 'Please enter all fields' });
       return;
     }
-    
+
     const success = await login({ email, password });
-    
+
     if (success) {
       setTimeout(() => navigate('/feed'), 200);
     }
@@ -49,13 +50,13 @@ const Login = () => {
       <p>
         <i className="fas fa-user"></i> Sign Into Your Account
       </p>
-      
+
       {alert && (
         <div className={`alert alert-${alert.type}`}>
           {alert.message}
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <input
@@ -67,16 +68,29 @@ const Login = () => {
             required
           />
         </div>
-        <div className="form-group">
+        <div className="form-group" style={{ position: 'relative' }}>
           <input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             placeholder="Password"
             name="password"
             minLength="6"
             value={password}
             onChange={handleChange}
             required
+            style={{ paddingRight: '40px' }}
           />
+          <i
+            className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}
+            onClick={() => setShowPassword(!showPassword)}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              cursor: 'pointer',
+              color: '#888'
+            }}
+          ></i>
         </div>
         <input type="submit" className="btn btn-primary" value="Login" />
       </form>
