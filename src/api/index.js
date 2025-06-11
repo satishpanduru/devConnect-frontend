@@ -2,7 +2,9 @@ import axios from 'axios';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL + '/api', //deployed API URL
+  baseURL: process.env.REACT_APP_API_URL 
+    ? process.env.REACT_APP_API_URL + '/api'
+    : 'http://localhost:5001/api',  // fallback for local dev
 });
 
 // Automatically attach token to requests
