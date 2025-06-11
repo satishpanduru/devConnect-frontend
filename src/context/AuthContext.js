@@ -1,4 +1,5 @@
 import axios from 'axios';
+import api from '../api';
 import { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
@@ -12,7 +13,7 @@ const AuthProvider = ({ children }) => {
   // REGISTER
   const register = async (formData) => {
     try {
-      const res = await axios.post('http://localhost:5001/api/auth/register', formData);
+      const res = await api.register(formData);
       localStorage.setItem('token', res.data.token);
       setIsAuthenticated(true);
       setUser(res.data.user);
@@ -30,7 +31,7 @@ const AuthProvider = ({ children }) => {
   // LOGIN
   const login = async (formData) => {
     try {
-      const res = await axios.post('http://localhost:5001/api/auth/login', formData);
+      const res = await api.login(formData);
       localStorage.setItem('token', res.data.token);
       setIsAuthenticated(true);
       setUser(res.data.user); // ✅ fixed
@@ -47,14 +48,9 @@ const AuthProvider = ({ children }) => {
   // UPDATE PROFILE
   const updateProfile = async (updatedData) => {
     try {
-      const token = localStorage.getItem('token');
-      console.log("token being sent:", token);
+      console.log("Sending profile update with data:", updatedData);
 
-      const res = await axios.put('http://localhost:5001/api/auth/update', updatedData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const res = await api.updateProfile(updatedData); // Uses shared axios instance
 
       console.log('Response from backend:', res.data);
       setUser(res.data);
@@ -84,10 +80,7 @@ const AuthProvider = ({ children }) => {
       }
 
       try {
-        const res = await axios.get('http://localhost:5001/api/auth/me', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
+        const res = await api.getCurrentUser(); // uses baseURL + /auth/me
         setUser(res.data);
         setIsAuthenticated(true);
       } catch (err) {
