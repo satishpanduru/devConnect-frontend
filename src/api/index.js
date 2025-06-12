@@ -27,7 +27,7 @@ api.getCurrentUser = () => api.get('/auth/me');
 //User endpoints
 api.getAllUsers = () => api.get('/users');
 
-api.updateProfile = (profileData) => api.put('/users/profile', profileData);
+api.updateProfile = (profileData) => api.put('/auth/update', profileData);
 
 //Post endpoints
 api.getPosts = () => api.get('/posts');
